@@ -1,0 +1,130 @@
+#Ver: elmatare_mbus_temp.yaml 2 2024-08-14 Ny hantering av ota: och Dallas DS18b20
+#Ver: elmatare_mbus_temp.yaml 1 2022-03-31
+# Tidigare Ver: elmatare_mbus_temp.yaml
+esphome:
+  name: elmatare-mbus-temp
+  includes:
+   - elmatare_mbus.h
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable Home Assistant API
+api:
+
+ota:
+  - platform: esphome
+    password: "01a555c80aac93863ea7a0f7f2d0e022"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "elmatare_mbus Fallback Hotspot"
+    password: "QzmGCSihFuun"
+
+captive_portal:
+
+# Enable logging Ändrad från standard
+logger:
+  level: DEBUG
+  baud_rate: 0
+
+# MBusReader
+uart:
+  id: uart_bus
+  rx_pin:
+    number: 16
+  baud_rate: 2400
+
+#Read Dallas DS18b20
+#dallas:
+one_wire:
+  - platform: gpio
+    pin: 18
+sensor:
+  - platform: dallas_temp
+    address: 0x8200000627eb1d28
+    name: "Temperatur ute"
+    filters:
+      - offset: -0.5
+
+#sensor:
+  - platform: custom
+    lambda: |-
+      auto mbus_reader = new MbusReader(id(uart_bus));
+      App.register_component(mbus_reader);
+      return {
+      mbus_reader->wattage_sensor,
+      mbus_reader->reactive_power_sensor,
+      mbus_reader->amperageL1_sensor,
+      mbus_reader->amperageL2_sensor,
+      mbus_reader->amperageL3_sensor,
+      mbus_reader->voltageL1_sensor,
+      mbus_reader->voltageL2_sensor,
+      mbus_reader->voltageL3_sensor,
+      mbus_reader->energy_sensor,
+      mbus_reader->reactive_energy_sensor
+      };
+    
+    sensors:
+    - name: "AMS Wattage"
+      unit_of_measurement: kW
+      accuracy_decimals: 2
+      filters:
+        - multiply: 0.001
+        
+    - name: "AMS Reactive Power"
+      unit_of_measurement: VAr
+      accuracy_decimals: 2
+      internal: false
+      
+    - name: "AMS Amperage L1"
+      unit_of_measurement: A
+      accuracy_decimals: 2
+      filters:
+        - multiply: 0.01
+        
+    - name: "AMS Amperage L2"
+      unit_of_measurement: A
+      accuracy_decimals: 2
+      filters:
+        - multiply: 0.01
+        
+    - name: "AMS Amperage L3"
+      unit_of_measurement: A
+      accuracy_decimals: 2
+      filters:
+        - multiply: 0.01
+        
+    - name: "AMS Voltage L1"
+      unit_of_measurement: V
+      accuracy_decimals: 0
+      
+    - name: "AMS Voltage L2"
+      unit_of_measurement: V
+      accuracy_decimals: 0
+      
+    - name: "AMS Voltage L3"
+      unit_of_measurement: V
+      accuracy_decimals: 0
+      
+    - name: "AMS Energy"
+      unit_of_measurement: kWh
+      accuracy_decimals: 2
+      state_class: "total_increasing"
+      device_class: "energy"
+      filters:
+        - multiply: 0.001
+        
+    - name: "AMS Hourly Reactive Energy"
+      unit_of_measurement: kVArh
+      accuracy_decimals: 2
+      internal: false
+      filters:
+        - multiply: 0.01
+        
