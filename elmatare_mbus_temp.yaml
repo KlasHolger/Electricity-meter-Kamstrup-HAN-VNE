@@ -1,10 +1,15 @@
 #Ver: elmatare_mbus_temp.yaml 2 2024-08-14 Ny hantering av ota: och Dallas DS18b20
-#Ver: elmatare_mbus_temp.yaml 1 2022-03-31
-# Tidigare Ver: elmatare_mbus_temp.yaml
+# Uppdaterad för att använda external component
 esphome:
   name: elmatare-mbus-temp
-  includes:
-   - elmatare_mbus.h
+  # Om du använder externa komponenter från detta repo via GitHub, se README i external_components/elmatare_mbus
+
+external_components:
+  - source: github://KlasHolger/Electricity-meter-Kamstrup-HAN-VNE@External-Component
+    components: [ "elmatare_mbus" ]
+
+includes:
+ - external_components/elmatare_mbus/elmatare_mbus.h
 
 esp32:
   board: esp32dev
@@ -53,7 +58,8 @@ sensor:
     filters:
       - offset: -0.5
 
-#sensor:
+# Konfigurera sensorerna som tidigare via custom-platformen
+sensor:
   - platform: custom
     lambda: |-
       auto mbus_reader = new MbusReader(id(uart_bus));
@@ -70,7 +76,7 @@ sensor:
       mbus_reader->energy_sensor,
       mbus_reader->reactive_energy_sensor
       };
-    
+
     sensors:
     - name: "AMS Wattage"
       unit_of_measurement: kW
@@ -127,4 +133,3 @@ sensor:
       internal: false
       filters:
         - multiply: 0.01
-        
