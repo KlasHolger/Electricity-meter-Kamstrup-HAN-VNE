@@ -1,4 +1,4 @@
-Elmätare M-Bus (ESPHome component)
+# Elmätare M-Bus (ESPHome component)
 
 Denna mapp (components/elmatare_mbus) finns för att ESPhome ska kunna ladda komponenten när du använder `external_components` i din YAML.
 
