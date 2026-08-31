@@ -1,5 +1,5 @@
 #Ver: elmatare_mbus_temp.yaml 2 2024-08-14 Ny hantering av ota: och Dallas DS18b20
-# Uppdaterad för att använda external component
+# Uppdaterad för att använda external component och att C++ sköter skalning
 esphome:
   name: elmatare-mbus-temp
   # Om du använder externa komponenter från detta repo via GitHub, se README i external_components/elmatare_mbus
@@ -81,8 +81,6 @@ sensor:
     - name: "AMS Wattage"
       unit_of_measurement: kW
       accuracy_decimals: 2
-      filters:
-        - multiply: 0.001
         
     - name: "AMS Reactive Power"
       unit_of_measurement: VAr
@@ -92,20 +90,14 @@ sensor:
     - name: "AMS Amperage L1"
       unit_of_measurement: A
       accuracy_decimals: 2
-      filters:
-        - multiply: 0.01
         
     - name: "AMS Amperage L2"
       unit_of_measurement: A
       accuracy_decimals: 2
-      filters:
-        - multiply: 0.01
         
     - name: "AMS Amperage L3"
       unit_of_measurement: A
       accuracy_decimals: 2
-      filters:
-        - multiply: 0.01
         
     - name: "AMS Voltage L1"
       unit_of_measurement: V
@@ -124,12 +116,8 @@ sensor:
       accuracy_decimals: 2
       state_class: "total_increasing"
       device_class: "energy"
-      filters:
-        - multiply: 0.001
         
     - name: "AMS Hourly Reactive Energy"
       unit_of_measurement: kVArh
       accuracy_decimals: 2
       internal: false
-      filters:
-        - multiply: 0.01

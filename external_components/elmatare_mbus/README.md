@@ -6,9 +6,7 @@ Placering i detta repo:
 
   external_components/elmatare_mbus/elmatare_mbus.h
 
-Hur du använder komponenten i ditt ESPHome-projekt
-
-Alternativ A — använd komponenten direkt från detta GitHub-repo (rekommenderas):
+Snabb användning i ESPHome-projekt
 
 1. Lägg till följande i din ESPHome YAML (byt ut branchnamnet om du vill):
 
@@ -21,7 +19,7 @@ external_components:
 includes:
   - external_components/elmatare_mbus/elmatare_mbus.h
 
-3. Använd samma lambda som tidigare för att registrera komponenten och sensorerna:
+3. Använd följande sensor-konfiguration (ingen multiply-filter behövs eftersom C++ sköter skalning):
 
 sensor:
   - platform: custom
@@ -41,11 +39,15 @@ sensor:
         mbus_reader->reactive_energy_sensor
       };
 
-Notera
-- Jag har inte ändrat sensornamn/skalning i koden — dessa hanteras i YAML med filters som tidigare.
-- Koden i headern har en mindre säkerhetsfix (loopen som letar OBIS-kod startar från index 1) för att undvika index-1 när buffern undersöks.
-
-Om du vill kan jag också:
-- Förbättra felhantering och parsing (t.ex. hantera teckenflöden mer robust)
-- Flytta koden till en separat repo och skapa en version/tags
+Sensorerna (fasta namn föreslås i YAML-exemplet i repo):
+- "AMS Wattage" (kW)
+- "AMS Reactive Power" (VAr)
+- "AMS Amperage L1" (A)
+- "AMS Amperage L2" (A)
+- "AMS Amperage L3" (A)
+- "AMS Voltage L1" (V)
+- "AMS Voltage L2" (V)
+- "AMS Voltage L3" (V)
+- "AMS Energy" (kWh)
+- "AMS Hourly Reactive Energy" (kVArh)
 
